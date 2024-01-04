@@ -1,0 +1,18 @@
+stages:
+  - test
+
+unittests:
+  stage: test
+  image: python:3.10
+  before_script:
+    - apt-get update && apt-get install -y exiftool
+    - pip install -r requirements.txt
+    - pip install coverage
+  script:
+    - coverage run --source=app --omit=*/gui/* -m unittest discover
+    - coverage xml
+    - coverage report --omit=*/gui/*
+  artifacts:
+    paths:
+      - coverage.xml
+  coverage: '/TOTAL.+?(\d+%)/'
